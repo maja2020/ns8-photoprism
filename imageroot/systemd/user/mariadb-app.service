@@ -17,7 +17,7 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/mariadb-app.pid \
     --cidfile %t/mariadb-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/photoprism.pod-id --replace -d --name mariadb-app \
     --volume database:/var/lib/mysql/:Z \
-    --env-file=%S/state/mariadb-app.env
+    --env-file=%S/state/mariadb.env
     ${MARIADB_IMAGE} \
     --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 ExecStartPost=/usr/bin/podman exec  mariadb-app /bin/bash -c 'printf "[client] \npassword=Nethesis,1234" > /root/.my.cnf'

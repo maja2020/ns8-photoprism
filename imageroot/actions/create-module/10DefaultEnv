@@ -8,6 +8,7 @@ import json
 import sys
 import os
 import agent
+import string
 import secrets
 
 # Try to parse the stdin as JSON.
@@ -36,16 +37,16 @@ except FileNotFoundError:
     }
     agent.write_envfile("mariadb-app.env", mariadb_env)
 
-#mandatory photoprism-app environment: 
+#mandatory photoprism default variables: 
 try:
-    photoprism_env = agent.read_envfile("photoprism-app.env")
+    photoprism_env = agent.read_envfile("photoprism.env")
     #leave previous existing config...
-    printf('photoprism.env already initialized')
+    print('photoprism.env already initialized')
     exit(2)
 except FileNotFoundError:
     APP_URL = "https://" + data.get("host", "")
     DISABLE_TLS = data.get("http2https", "")
-    if APP_URL is "https://": exit(1)
+    if APP_URL == "https://": exit(1)
     if DISABLE_TLS == "": exit(1)
     if mariadb_env is None: exit(1)
     #photoprism user settings, all defaults as of 2025-06-28 (for now adjustable by configure-module command, ui is for version 2)
