@@ -1,0 +1,36 @@
+#
+# Copyright (C) 2022 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+[Unit]
+Description=Podman  photoprism-app.service
+BindsTo=photoprism.service
+After=photoprism.service mariadb-app.service
+
+[Service]
+Environment=PODMAN_SYSTEMD_UNIT=%n
+EnvironmentFile=%S/state/environment
+EnvironmentFile=-%S/state/discovery.env
+WorkingDirectory=%S/state
+Restart=always
+TimeoutStopSec=70
+ExecStartPre=/bin/mkdir -p config
+ExecStartPre=/bin/rm -f %t/photoprism-app.pid %t/photoprism-app.ctr-id
+ExecStartPre=/usr/local/bin/runagent discover-service
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/photoprism-app.pid \
+    --cidfile %t/photoprism-app.ctr-id --cgroups=no-conmon \
+    --pod-id-file %t/photoprism.pod-id --replace -d --name  photoprism-app \
+    --env-file photoprism-usr.env
+    --volume html:/var/www/html/:Z \
+    --volume ./config:/var/roundcube/config:Z \
+    ${PHOTOPRISM_IMAGE}
+ExecStop=/usr/bin/podman stop --ignore --cidfile %t/photoprism-app.ctr-id -t 10
+ExecReload=/usr/bin/podman kill -s HUP photoprism-app
+SyslogIdentifier=%u
+ExecStopPost=/usr/bin/podman rm --ignore -f --cidfile %t/photoprism-app.ctr-id
+PIDFile=%t/photoprism-app.pid
+Type=forking
+
+[Install]
+WantedBy=default.target

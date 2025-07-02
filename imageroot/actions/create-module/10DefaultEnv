@@ -1,0 +1,133 @@
+#!/usr/bin/env python3
+
+#
+# Copyright (C) 2022 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+import json
+import sys
+import os
+import agent
+import secrets
+
+# Try to parse the stdin as JSON.
+# If parsing fails, output everything to stderr
+data = json.load(sys.stdin)
+
+# These files are read by systemd/user scripts: 
+# mandatory mariadb-app environment. 
+try:
+    mariadb_env = agent.read_envfile("mariadb.env")
+    #leave previous existing config...
+    exit(2)
+except FileNotFoundError:
+    # Generate a new passwords for mariadb admin and database user. 
+    # Photoprism takes care of creating the database.
+    alphabet = string.ascii_letters + string.digits
+    token1 = ''.join([secrets.choice(alphabet) for i in range(32)])
+    token2 = ''.join([secrets.choice(alphabet) for i in range(32)])
+    mariadb_env = {
+        "MARIADB_AUTO_UPGRADE": "1",
+        "MARIADB_INITDB_SKIP_TZINFO": "1",
+        "MARIADB_USER":"photoprism",
+        "MARIADB_DATABASE":"photoprism",
+        "MARIADB_PASSWORD":token1,
+        "MARIADB_ROOT_PASSWORD":token2
+    }
+    agent.write_envfile("mariadb-app.env", mariadb_env)
+
+#mandatory photoprism-app environment: 
+try:
+    photoprism_env = agent.read_envfile("photoprism-app.env")
+    #leave previous existing config...
+    printf('photoprism.env already initialized')
+    exit(2)
+except FileNotFoundError:
+    APP_URL = "https://" + data.get("host", "")
+    DISABLE_TLS = data.get("http2https", "")
+    if APP_URL is "https://": exit(1)
+    if DISABLE_TLS == "": exit(1)
+    if mariadb_env is None: exit(1)
+    #photoprism user settings, all defaults as of 2025-06-28 (for now adjustable by configure-module command, ui is for version 2)
+    #https://dl.photoprism.app/podman/docker-compose.yml
+    #non-configurable settings:
+    PHOTOPRISM_DATABASE_DRIVER = "mysql"                                # MariaDB 10.5.12+ (MySQL successor) offers significantly better performance compared to SQLite
+    PHOTOPRISM_DATABASE_SERVER = "mariadb:3306"                         # MariaDB database server (hostname:port)
+    PHOTOPRISM_DATABASE_NAME = mariadb_env.get("MARIADB_DATABASE")      # MariaDB database schema name
+    PHOTOPRISM_DATABASE_USER = mariadb_env.get("MARIADB_USER")          # MariaDB database user name
+    PHOTOPRISM_DATABASE_PASSWORD = mariadb_env.get("MARIADB_PASSWORD")  # MariaDB database user password
+    PHOTOPRISM_ADMIN_USER = "admin"                                     # admin login username
+    PHOTOPRISM_ADMIN_PASSWORD = "insecure"
+    
+    #configurable user settings
+    PHOTOPRISM_AUTH_MODE = data.get("PHOTOPRISM_AUTH_MODE","password")                  # authentication mode (public, password)
+    PHOTOPRISM_SITE_URL = data.get("PHOTOPRISM_SITE_URL",APP_URL)                       # server URL in the format "http(s)://domain.name(:port)/(path)"
+    PHOTOPRISM_DISABLE_TLS = data.get("PHOTOPRISM_DISABLE_TLS", DISABLE_TLS)            # disables HTTPS/TLS even if the site URL starts with https:// and a certificate is available
+    PHOTOPRISM_DEFAULT_TLS = data.get("PHOTOPRISM_DEFAULT_TLS", "true")                 # defaults to a self-signed HTTPS/TLS certificate if no other certificate is available
+    PHOTOPRISM_ORIGINALS_LIMIT = data.get("PHOTOPRISM_ORIGINALS_LIMIT", 5000)           # file size limit for originals in MB (increase for high-res video)
+    PHOTOPRISM_HTTP_COMPRESSION = data.get("PHOTOPRISM_HTTP_COMPRESSION", "gzip")       # improves transfer speed and bandwidth utilization (none or gzip)
+    PHOTOPRISM_LOG_LEVEL = data.get("PHOTOPRISM_LOG_LEVEL", "info")                     # log level: trace, debug, info, warning, error, fatal, or panic
+    PHOTOPRISM_READONLY = data.get("PHOTOPRISM_READONLY", "false")                      # do not modify originals directory (reduced functionality)
+    PHOTOPRISM_EXPERIMENTAL = data.get("PHOTOPRISM_EXPERIMENTAL", "false")              # enables experimental features
+    PHOTOPRISM_DISABLE_CHOWN = data.get("PHOTOPRISM_DISABLE_CHOWN", "false")            # disables updating storage permissions via chmod and chown on startup
+    PHOTOPRISM_DISABLE_WEBDAV = data.get("PHOTOPRISM_DISABLE_WEBDAV", "false")          # disables built-in WebDAV server
+    PHOTOPRISM_DISABLE_SETTINGS = data.get("PHOTOPRISM_DISABLE_SETTINGS", "false")      # disables settings UI and API
+    PHOTOPRISM_DISABLE_TENSORFLOW = data.get("PHOTOPRISM_DISABLE_TENSORFLOW", "false")  # disables all features depending on TensorFlow
+    PHOTOPRISM_DISABLE_FACES = data.get("PHOTOPRISM_DISABLE_FACES", "false")            # disables face detection and recognition (requires TensorFlow)
+    PHOTOPRISM_DISABLE_CLASSIFICATION = data.get("PHOTOPRISM_DISABLE_CLASSIFICATION", "false")     # disables image classification (requires TensorFlow)
+    PHOTOPRISM_DISABLE_VECTORS = data.get("PHOTOPRISM_DISABLE_VECTORS", "false")        # disables vector graphics support
+    PHOTOPRISM_DISABLE_RAW = data.get("PHOTOPRISM_DISABLE_RAW", "false")                # disables indexing and conversion of RAW images
+    PHOTOPRISM_RAW_PRESETS = data.get("PHOTOPRISM_RAW_PRESETS", "false")                # enables applying user presets when converting RAW images (reduces performance)
+    PHOTOPRISM_SIDECAR_YAML = data.get("PHOTOPRISM_SIDECAR_YAML", "true")               # creates YAML sidecar files to back up picture metadata
+    PHOTOPRISM_BACKUP_ALBUMS = data.get("PHOTOPRISM_BACKUP_ALBUMS", "true")             # creates YAML files to back up album metadata
+    PHOTOPRISM_BACKUP_DATABASE = data.get("PHOTOPRISM_BACKUP_DATABASE", "true")         # creates regular backups based on the configured schedule
+    PHOTOPRISM_BACKUP_SCHEDULE = data.get("PHOTOPRISM_BACKUP_SCHEDULE", "daily")        # backup SCHEDULE in cron format (e.g. "0 12 * * *" for daily at noon) or at a random time (daily, weekly)
+    PHOTOPRISM_INDEX_SCHEDULE = data.get("PHOTOPRISM_INDEX_SCHEDULE", "")               # indexing SCHEDULE in cron format (e.g. "@every 3h" for every 3 hours; "" to disable)
+    PHOTOPRISM_AUTO_INDEX = data.get("PHOTOPRISM_AUTO_INDEX", 300)                      # delay before automatically indexing files in SECONDS when uploading via WebDAV (-1 to disable)
+    PHOTOPRISM_AUTO_IMPORT = data.get("PHOTOPRISM_AUTO_IMPORT", -1)                     # delay before automatically importing files in SECONDS when uploading via WebDAV (-1 to disable)
+    PHOTOPRISM_DETECT_NSFW = data.get("PHOTOPRISM_DETECT_NSFW", "false")                # automatically flags photos as private that MAY be offensive (requires TensorFlow)
+    PHOTOPRISM_UPLOAD_NSFW = data.get("PHOTOPRISM_UPLOAD_NSFW", "true")                 # allows uploads that MAY be offensive (no effect without TensorFlow)
+    PHOTOPRISM_SITE_CAPTION = data.get("PHOTOPRISM_SITE_CAPTION", "AI-Powered Photos App")
+    PHOTOPRISM_SITE_DESCRIPTION = data.get("PHOTOPRISM_SITE_DESCRIPTION", "")           # meta site description
+    PHOTOPRISM_SITE_AUTHOR = data.get("PHOTOPRISM_SITE_AUTHOR", "")                     # meta site author
+    PHOTOPRISM_FFMPEG_ENCODER = data.get("PHOTOPRISM_FFMPEG_ENCODER", "software")       # H.264/AVC encoder (software, intel, nvidia, apple, raspberry, or vaapi)
+    PHOTOPRISM_FFMPEG_SIZE = data.get("PHOTOPRISM_FFMPEG_SIZE", "1920")                 # video size limit in pixels (720-7680) (default: 3840)
+    PHOTOPRISM_FFMPEG_BITRATE = data.get("PHOTOPRISM_FFMPEG_BITRATE", "32")             # video bitrate limit in Mbit/s (default: 50)
+
+    app_config = {
+    "PHOTOPRISM_AUTH_MODE":PHOTOPRISM_AUTH_MODE,
+    "PHOTOPRISM_SITE_URL":PHOTOPRISM_SITE_URL,
+    "PHOTOPRISM_DISABLE_TLS":PHOTOPRISM_DISABLE_TLS,
+    "PHOTOPRISM_DEFAULT_TLS":PHOTOPRISM_DEFAULT_TLS,
+    "PHOTOPRISM_ORIGINALS_LIMIT":PHOTOPRISM_ORIGINALS_LIMIT,
+    "PHOTOPRISM_HTTP_COMPRESSION":PHOTOPRISM_HTTP_COMPRESSION,
+    "PHOTOPRISM_LOG_LEVEL":PHOTOPRISM_LOG_LEVEL,
+    "PHOTOPRISM_READONLY":PHOTOPRISM_READONLY,
+    "PHOTOPRISM_EXPERIMENTAL":PHOTOPRISM_EXPERIMENTAL,
+    "PHOTOPRISM_DISABLE_CHOWN":PHOTOPRISM_DISABLE_CHOWN,
+    "PHOTOPRISM_DISABLE_WEBDAV":PHOTOPRISM_DISABLE_WEBDAV,
+    "PHOTOPRISM_DISABLE_SETTINGS":PHOTOPRISM_DISABLE_SETTINGS,
+    "PHOTOPRISM_DISABLE_TENSORFLOW":PHOTOPRISM_DISABLE_TENSORFLOW,
+    "PHOTOPRISM_DISABLE_FACES":PHOTOPRISM_DISABLE_FACES,
+    "PHOTOPRISM_DISABLE_CLASSIFICATION":PHOTOPRISM_DISABLE_CLASSIFICATION,
+    "PHOTOPRISM_DISABLE_VECTORS":PHOTOPRISM_DISABLE_VECTORS,
+    "PHOTOPRISM_DISABLE_RAW":PHOTOPRISM_DISABLE_RAW,
+    "PHOTOPRISM_RAW_PRESETS":PHOTOPRISM_RAW_PRESETS,
+    "PHOTOPRISM_SIDECAR_YAML":PHOTOPRISM_SIDECAR_YAML,
+    "PHOTOPRISM_BACKUP_ALBUMS":PHOTOPRISM_BACKUP_ALBUMS,
+    "PHOTOPRISM_BACKUP_DATABASE":PHOTOPRISM_BACKUP_DATABASE,
+    "PHOTOPRISM_BACKUP_SCHEDULE":PHOTOPRISM_BACKUP_SCHEDULE,
+    "PHOTOPRISM_INDEX_SCHEDULE":PHOTOPRISM_INDEX_SCHEDULE,
+    "PHOTOPRISM_AUTO_INDEX":PHOTOPRISM_AUTO_INDEX,
+    "PHOTOPRISM_AUTO_IMPORT":PHOTOPRISM_AUTO_IMPORT,
+    "PHOTOPRISM_DETECT_NSFW":PHOTOPRISM_DETECT_NSFW,
+    "PHOTOPRISM_UPLOAD_NSFW":PHOTOPRISM_UPLOAD_NSFW,
+    "PHOTOPRISM_SITE_CAPTION":PHOTOPRISM_SITE_CAPTION,
+    "PHOTOPRISM_SITE_DESCRIPTION":PHOTOPRISM_SITE_DESCRIPTION,
+    "PHOTOPRISM_SITE_AUTHOR":PHOTOPRISM_SITE_AUTHOR,
+    "PHOTOPRISM_FFMPEG_ENCODER":PHOTOPRISM_FFMPEG_ENCODER,
+    "PHOTOPRISM_FFMPEG_SIZE":PHOTOPRISM_FFMPEG_SIZE,
+    "PHOTOPRISM_FFMPEG_BITRATE":PHOTOPRISM_FFMPEG_BITRATE,
+    }
+    agent.write_envfile("photoprism.env", app_config)
+
