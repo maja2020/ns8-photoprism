@@ -16,11 +16,12 @@ import secrets
 data = json.load(sys.stdin)
 
 # These files are read by systemd/user scripts: 
-# mandatory mariadb-app environment. 
+# mandatory mariadb.env environment file. 
 try:
     mariadb_env = agent.read_envfile("mariadb.env")
-    #leave previous existing config...
-    exit(2)
+    #leave previous existing config... should not be there, you do not want to loose access creds
+    print('mariadb env already exists')
+    exit(0)
 except FileNotFoundError:
     # Generate a new passwords for mariadb admin and database user. 
     # Photoprism takes care of creating the database.
@@ -35,14 +36,14 @@ except FileNotFoundError:
         "MARIADB_PASSWORD":token1,
         "MARIADB_ROOT_PASSWORD":token2
     }
-    agent.write_envfile("mariadb-app.env", mariadb_env)
+    agent.write_envfile("mariadb.env", mariadb_env)
 
-#mandatory photoprism default variables: 
+#mandatory photoprism.env default variables: 
 try:
     photoprism_env = agent.read_envfile("photoprism.env")
     #leave previous existing config...
     print('photoprism.env already initialized')
-    exit(2)
+    exit(0)
 except FileNotFoundError:
     APP_URL = "https://" + data.get("host", "")
     DISABLE_TLS = data.get("http2https", "")
