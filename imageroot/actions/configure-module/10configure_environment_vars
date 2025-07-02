@@ -14,12 +14,19 @@ import agent
 data = json.load(sys.stdin)
 
 try:
-    app_config = agent.read_envfile("photoprism-app.env")
+    app_config = agent.read_envfile("mysql.env")
 except FileNotFoundError:
     #not configured?
-    prinf('mysql.env not configured')
+    print('mysql.env not configured')
     exit(2)
 
+try:
+    app_config = agent.read_envfile("photoprism.env")
+except FileNotFoundError:
+    #should already be there
+    print('photoprism.env not configured')
+    exit(2)
+    
 #change corresponding values in the app config and write to file if changed
 changed = False
 for key, value in app_config:
