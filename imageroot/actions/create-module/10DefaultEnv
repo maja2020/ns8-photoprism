@@ -45,11 +45,11 @@ try:
     print('photoprism.env already initialized')
     exit(0)
 except FileNotFoundError:
-    APP_URL = "https://" + data.get("host", "")
-    DISABLE_TLS = data.get("http2https", "")
-    if APP_URL == "https://": exit(1)
-    if DISABLE_TLS == "": exit(1)
-    if mariadb_env is None: exit(1)
+    APP_URL = "https://" + data.get("host", "photoprism.mydomain.tld")
+    DISABLE_TLS = data.get("http2https", "true")
+    if mariadb_env is None: 
+        print('mariadb.env not found')
+        exit(1)
     #photoprism user settings, all defaults as of 2025-06-28 (for now adjustable by configure-module command, ui is for version 2)
     #https://dl.photoprism.app/podman/docker-compose.yml
     #non-configurable settings:
