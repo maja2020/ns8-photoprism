@@ -15,7 +15,6 @@ EnvironmentFile=-%S/state/discovery.env
 WorkingDirectory=%S/state
 Restart=always
 TimeoutStopSec=70
-ExecStartPre=/bin/mkdir -p config
 ExecStartPre=/bin/rm -f %t/photoprism-app.pid %t/photoprism-app.ctr-id
 ExecStartPre=/usr/local/bin/runagent discover-service
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/photoprism-app.pid \
