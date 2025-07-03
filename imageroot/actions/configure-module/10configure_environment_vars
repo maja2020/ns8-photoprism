@@ -29,7 +29,7 @@ except FileNotFoundError:
     
 #change corresponding values in the app config and write to file if changed
 changed = False
-for key, value in app_config:
+for key, value in app_config.items():
     if data.get(key.lower()) is not None: 
         app_config[key] = value
         changed = True
