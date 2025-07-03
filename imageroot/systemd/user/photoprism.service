@@ -24,7 +24,7 @@ ExecStartPre=/usr/bin/podman pod create --infra-conmon-pidfile %t/photoprism.pid
     --name photoprism \
     --publish 127.0.0.1:${TCP_PORT}:20001 \
     --replace \
-    --network=slirp4netns:allow_host_loopback=true \
+    --network=slirp4netns:allow_host_loopback=true
 ExecStart=/usr/bin/podman pod start --pod-id-file %t/photoprism.pod-id
 ExecStop=/usr/bin/podman pod stop --ignore --pod-id-file %t/photoprism.pod-id -t 10
 ExecStopPost=/usr/bin/podman pod rm --ignore -f --pod-id-file %t/photoprism.pod-id
