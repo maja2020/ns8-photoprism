@@ -22,7 +22,7 @@ ExecStartPre=/bin/rm -f %t/photoprism.pid %t/photoprism.pod-id
 ExecStartPre=/usr/bin/podman pod create --infra-conmon-pidfile %t/photoprism.pid \
     --pod-id-file %t/photoprism.pod-id \
     --name photoprism \
-    --publish 127.0.0.1:${TCP_PORT_PHOTOPRISM}:2342 \
+    --publish 127.0.0.1:${TCP_PORT} \
     --network=slirp4netns:allow_host_loopback=true \
     --replace
 ExecStart=/usr/bin/podman pod start --pod-id-file %t/photoprism.pod-id

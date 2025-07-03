@@ -22,17 +22,15 @@ except FileNotFoundError:
 
 try:
     app_config = agent.read_envfile("photoprism.env")
+    #change corresponding values in the app config and write to file if changed
+    changed = False
+    for key, value in app_config.items():
+        if data.get(key.lower()) is not None: 
+            app_config[key] = value
+            changed = True
+            print("changed %s to %s" %(key, value))
+    if changed: agent.write_envfile("photoprism.env", app_config)
 except FileNotFoundError:
     #should already be there
     print('module creation failed: photoprism.env not configured')
     exit(2)
-    
-#change corresponding values in the app config and write to file if changed
-changed = False
-for key, value in app_config.items():
-    if data.get(key.lower()) is not None: 
-        app_config[key] = value
-        changed = True
-        print("changed %s to %s" %(key, value))
-if changed: agent.write_envfile("photoprism.env", app_config)
-
