@@ -19,12 +19,7 @@ EnvironmentFile=-%S/state/environment
 Restart=always
 TimeoutStopSec=70
 ExecStartPre=/bin/rm -f %t/photoprism.pid %t/photoprism.pod-id
-ExecStartPre=/usr/bin/podman pod create --infra-conmon-pidfile %t/photoprism.pid \
-    --pod-id-file %t/photoprism.pod-id \
-    --name photoprism \
-    --publish 127.0.0.1:${TCP_PORT}:20001 \
-    --replace \
-    --network=slirp4netns:allow_host_loopback=true
+ExecStartPre=/usr/bin/podman pod create --infra-conmon-pidfile %t/photoprism.pid --pod-id-file %t/photoprism.pod-id -n photoprism -p 127.0.0.1:${TCP_PORT}:2342 --replace
 ExecStart=/usr/bin/podman pod start --pod-id-file %t/photoprism.pod-id
 ExecStop=/usr/bin/podman pod stop --ignore --pod-id-file %t/photoprism.pod-id -t 10
 ExecStopPost=/usr/bin/podman pod rm --ignore -f --pod-id-file %t/photoprism.pod-id

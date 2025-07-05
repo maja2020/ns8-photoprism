@@ -6,25 +6,17 @@
 [Unit]
 Description=Podman  photoprism-app.service
 BindsTo=photoprism.service
-After=photoprism.service mariadb-app.service
+After=photoprism.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n
 EnvironmentFile=%S/state/environment
-EnvironmentFile=-%S/state/discovery.env
 WorkingDirectory=%S/state
 Restart=always
 TimeoutStopSec=70
 ExecStartPre=/bin/rm -f %t/photoprism-app.pid %t/photoprism-app.ctr-id
 ExecStartPre=/usr/local/bin/runagent discover-service
-ExecStart=/usr/bin/podman run --conmon-pidfile %t/photoprism-app.pid \
-    --cidfile %t/photoprism-app.ctr-id --cgroups=no-conmon \
-    --pod-id-file %t/photoprism.pod-id --replace -d --name  photoprism-app \
-    --env-file=photoprism-app.env \
-    --volume=originals:/photoprism/originals:Z \     # original media files (photos and videos)
-    --volume=import:/photoprism/import:Z \           # *optional* folder from which files can be imported to originals
-    --volume=storage:/photoprism/storage:Z \         # *writable* storage folder for cache, database, and sidecar files (never remove)
-    ${PHOTOPRISM_IMAGE}
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/photoprism-app.pid --cidfile %t/photoprism-app.ctr-id --cgroups=no-conmon --pod-id-file %t/photoprism.pod-id --replace -d --name  photoprism-app --env-file=photoprism.env -v originals:/photoprism/originals: -v import:/photoprism/import: -v storage:/photoprism/storage: ${PHOTOPRISM_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/photoprism-app.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP photoprism-app
 SyslogIdentifier=%u
