@@ -15,13 +15,14 @@ import os
 # If parsing fails, output everything to stderr
 data = json.load(sys.stdin)
 
+# Setup default values on first run
+host = data.get("host")
+h2hs = data.get("http2https", False)
+le = data.get("lets_encrypt", False)
+
 try: 
     traefik_config = agent.read_envfile("environment")
 except:
-    # Setup default values on first run
-    host = data.get("host")
-    h2hs = data.get("http2https", False)
-    le = data.get("lets_encrypt", False)
     # Setup configuration from user input.
     agent.set_env("TRAEFIK_HOST", host)
     agent.set_env("TRAEFIK_HTTP2HTTPS", h2hs)
@@ -31,7 +32,8 @@ except:
     agent.dump_env()
     sys.exit(0)
 
-#check if traefik parameter is changed: 
+# at this point there is already a running config. 
+# check if traefik parameter is changed: 
 for key, value in traefik_config.items():
     mykey = key.replace("_TRAEFIK_", "").lower()
     if data.get(mykey) is not None:
