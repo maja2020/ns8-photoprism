@@ -15,8 +15,14 @@ WorkingDirectory=%S/state
 Restart=always
 TimeoutStopSec=70
 ExecStartPre=/bin/rm -f %t/photoprism-app.pid %t/photoprism-app.ctr-id
-ExecStartPre=/usr/local/bin/runagent discover-service
-ExecStart=/usr/bin/podman run --conmon-pidfile %t/photoprism-app.pid --cidfile %t/photoprism-app.ctr-id --cgroups=no-conmon --pod-id-file %t/photoprism.pod-id --replace -d --name  photoprism-app --env-file=photoprism.env -v originals:/photoprism/originals: -v import:/photoprism/import: -v storage:/photoprism/storage: ${PHOTOPRISM_IMAGE}
+ExecStart=/usr/bin/podman run --conmon-pidfile %t/photoprism-app.pid \
+	--cidfile %t/photoprism-app.ctr-id --cgroups=no-conmon --pod-id-file %t/photoprism.pod-id \
+	--replace -d --name  photoprism-app \
+	--env-file=photoprism.env \
+	--volume originals:/photoprism/originals \
+	--volume import:/photoprism/import \
+	--volume storage:/photoprism/storage \
+	${PHOTOPRISM_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/photoprism-app.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP photoprism-app
 SyslogIdentifier=%u

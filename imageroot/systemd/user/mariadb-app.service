@@ -17,6 +17,7 @@ ExecStartPre=/bin/rm -f %t/mariadb-app.pid %t/mariadb-app.ctr-id
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/mariadb-app.pid \
     --cidfile %t/mariadb-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/photoprism.pod-id --replace -d --name mariadb-app \
+    --security-opt seccomp=unconfined \
     --env-file=%S/state/mariadb.env \
     --volume database:/var/lib/mysql/:Z \
     ${MARIADB_IMAGE} \
