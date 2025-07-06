@@ -14,36 +14,27 @@ import os
 # Try to parse the stdin as JSON.
 # If parsing fails, output everything to stderr
 data = json.load(sys.stdin)
-
-# Setup default values on first run
+required_keys = {"host", "http2https", "lets_encrypt"}
+# don't change TRAEFIK settings if not all three keys are there
+if not required_keys.issubset(data): 
+    exit(0)
+   
 host = data.get("host")
-h2hs = data.get("http2https", False)
+h2hs = data.get("http2https", True)
 le = data.get("lets_encrypt", False)
 
-try: 
-    traefik_config = agent.read_envfile("environment")
-except:
-    # Setup configuration from user input.
-    agent.set_env("TRAEFIK_HOST", host)
-    agent.set_env("TRAEFIK_HTTP2HTTPS", h2hs)
-    agent.set_env("TRAEFIK_LETS_ENCRYPT", le)
-    # Make sure everything is saved inside the environment file
-    # just before starting systemd unit
-    agent.dump_env()
-    sys.exit(0)
+agent.set_env("TRAEFIK_HOST", host)
+agent.set_env("TRAEFIK_HTTP2HTTPS", h2hs)
+agent.set_env("TRAEFIK_LETS_ENCRYPT", le)
 
-# at this point there is already a running config. 
-# check if traefik parameter is changed: 
-for key, value in traefik_config.items():
-    mykey = key.replace("_TRAEFIK_", "").lower()
-    if data.get(mykey) is not None:
-        agent.set_env(key,value)
-        print("changed %s to %s" %(key, value))
+# Make sure everything is saved inside the environment file
+# just before starting systemd unit
+agent.dump_env()
 
 # Find default traefik instance for current node
 default_traefik_id = agent.resolve_agent_id('traefik@node')
 if default_traefik_id is None:
-    sys.exit(2)
+    exit(2)
 
 response = agent.tasks.run(
     agent_id=agent.resolve_agent_id('traefik@node'),

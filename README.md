@@ -33,9 +33,12 @@ The above command will:
 - Start and configure the photoprism instance with the right traefik settings. 
 - First start wil create an empty mysql database and configure photoprism with default settings. 
 - The default photoprism login is user:admin passwd:insecure. This is the photoprism default. 
-- Change password ASAP at first logon!
+- Change password ASAP at first logon! -> Settings - Account - Change password.
 
-View current photoprism settings: runagent -m photoprism1 cat photoprism.env
+View current photoprism settings: 
+```
+runagent -m photoprism1 cat photoprism.env
+```
 
 To change a configuration option:
 
@@ -44,9 +47,9 @@ Launch `configure-module`, by setting the following parameters:
 - `<MODULE_PARAM2_NAME>`: <MODULE_PARAM2_DESCRIPTION>
 
 Example:
-
+```
     api-cli run configure-module --agent module/photprism1 --data '{"PHOTOPRISM_LOG_LEVEL":"debug"}'
-
+```
 PHOTPRISM_SITE_URL parameter will be set to the configured "host" parameter.
 
 View current settings: runagent -m photoprism1 cat photoprism.env

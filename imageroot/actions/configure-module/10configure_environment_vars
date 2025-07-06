@@ -22,15 +22,15 @@ except FileNotFoundError:
 
 try:
     app_config = agent.read_envfile("photoprism.env")
-    #change corresponding values in the app config and write to file if changed
+    #change corresponding values in the app_config and write to file if anything changed
     changed = False
     for key, value in app_config.items():
-        if data.get(key.lower()) is not None:
-            app_config[key] = value
+        if key in data:
+            app_config[key.lower()] = data.get(key)
             changed = True
             print("changed %s to %s" %(key, value))
     #if the external traefik url changes
-    if data.get("host") is not None: 
+    if "host" in data: 
         app_config["PHOTOPRISM_SITE_URL"]="https://" + data.get("host")
         changed = True    
     if changed: agent.write_envfile("photoprism.env", app_config)
