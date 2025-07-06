@@ -31,7 +31,7 @@ try:
             changed = True
             sys.stdout.write("changed %s to %s" %(key, value))
     #if the external traefik url changes
-    if {"host"} in data: 
+    if "host" in data: 
         app_config["PHOTOPRISM_SITE_URL"]="https://" + data.get("host")
         changed = True    
     if changed: agent.write_envfile("photoprism.env", app_config)
