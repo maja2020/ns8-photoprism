@@ -17,24 +17,25 @@ try:
     app_config = agent.read_envfile("mariadb.env")
 except FileNotFoundError:
     #not configured?
-    print('module creation failed: mariadb.env not configured')
+    sys.stdout.write('module creation failed: mariadb.env not configured')
     exit(2)
 
 try:
     app_config = agent.read_envfile("photoprism.env")
     #change corresponding values in the app_config and write to file if anything changed
+    #input is a lower key, output in env file is upper version
     changed = False
     for key, value in app_config.items():
-        if key in data:
-            app_config[key.lower()] = data.get(key)
+        if key.lower() in data:
+            app_config[key] = data.get(key.lower)
             changed = True
-            print("changed %s to %s" %(key, value))
+            sys.stdout.write("changed %s to %s" %(key, value))
     #if the external traefik url changes
-    if "host" in data: 
+    if {"host"} in data: 
         app_config["PHOTOPRISM_SITE_URL"]="https://" + data.get("host")
         changed = True    
     if changed: agent.write_envfile("photoprism.env", app_config)
 except FileNotFoundError:
     #should already be there
-    print('module creation failed: photoprism.env not configured')
+    sys.stdout.write('module creation failed: photoprism.env not configured')
     exit(2)
