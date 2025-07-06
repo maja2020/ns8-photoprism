@@ -18,36 +18,39 @@ Output example:
     {"module_id": "photoprism1", "image_name": "photoprism", "image_url": "ghcr.io/maja2020/photoprism:latest"}
 
 ## Configure
-Photoprism has a ton of configurable options: 1* nonconfigurable options like database settings
-Non configurable options: mysql database settings, site url 
-
-Example:
 ```
 api-cli run configure-module --agent module/photoprism1 --data - <<EOF
 {
   "host": "myphotoprism.domain.com",
   "http2https": true,
   "lets_encrypt": false
+Example:
 }
 EOF
 ```
 
 The above command will:
-- Start and configure the photoprism instance with the right treafik settings:
-- First start wil create an empty mysql database and configure photoprism with default settings. Settings are stored in .config environment files. 
-- The default login is user:admin passwd:insecure. Change passowrd at first logon.
+- Start and configure the photoprism instance with the right traefik settings. 
+- First start wil create an empty mysql database and configure photoprism with default settings. 
+- The default photoprism login is user:admin passwd:insecure. This is the photoprism default. 
+- Change password ASAP at first logon!
 
-To change a configuration option: 
+View current photoprism settings: runagent -m photoprism1 cat photoprism.env
+
+To change a configuration option:
 
 Launch `configure-module`, by setting the following parameters:
 - `<MODULE_PARAM1_NAME>`: <MODULE_PARAM1_DESCRIPTION>
 - `<MODULE_PARAM2_NAME>`: <MODULE_PARAM2_DESCRIPTION>
-- ...
 
 Example:
 
-    api-cli run module/photoprism1/configure-module --data '{"}'
+    api-cli run configure-module --agent module/photprism1 --data '{"PHOTOPRISM_LOG_LEVEL":"debug"}'
 
+PHOTPRISM_SITE_URL parameter will be set to the configured "host" parameter.
+
+View current settings: runagent -m photoprism1 cat photoprism.env
+Manual changes to the env files may be lost during updates.
 
 ## Uninstall
 

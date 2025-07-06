@@ -45,26 +45,24 @@ try:
     print('photoprism.env already initialized')
     exit(0)
 except FileNotFoundError:
-    APP_URL = "https://" + data.get("host", "photoprism.mydomain.tld")
-    DISABLE_TLS = data.get("http2https", "true")
+    APP_URL = "https://" + data.get("host", "photoprism.mydomain")
     if mariadb_env is None: 
         print('mariadb.env not found')
         exit(1)
     #photoprism user settings, all defaults as of 2025-06-28 (for now adjustable by configure-module command, ui is for version 2)
     #https://dl.photoprism.app/podman/docker-compose.yml
     #non-configurable settings:
-    PHOTOPRISM_DATABASE_DRIVER = "mysql"                                # MariaDB 10.5.12+ (MySQL successor) offers significantly better performance compared to SQLite
-    PHOTOPRISM_DATABASE_SERVER = "mariadb:3306"                         # MariaDB database server (hostname:port)
-    PHOTOPRISM_DATABASE_NAME = mariadb_env.get("MARIADB_DATABASE")      # MariaDB database schema name
-    PHOTOPRISM_DATABASE_USER = mariadb_env.get("MARIADB_USER")          # MariaDB database user name
-    PHOTOPRISM_DATABASE_PASSWORD = mariadb_env.get("MARIADB_PASSWORD")  # MariaDB database user password
-    PHOTOPRISM_ADMIN_USER = "admin"                                     # admin login username
+    PHOTOPRISM_DATABASE_DRIVER = "mysql"                                                # MariaDB 10.5.12+ (MySQL successor) offers significantly better performance compared to SQLite
+    PHOTOPRISM_DATABASE_SERVER = "mariadb:3306"                                         # MariaDB database server (hostname:port)
+    PHOTOPRISM_DATABASE_NAME = mariadb_env.get("MARIADB_DATABASE")                      # MariaDB database schema name
+    PHOTOPRISM_DATABASE_USER = mariadb_env.get("MARIADB_USER")                          # MariaDB database user name
+    PHOTOPRISM_DATABASE_PASSWORD = mariadb_env.get("MARIADB_PASSWORD")                  # MariaDB database user password
+    PHOTOPRISM_ADMIN_USER = "admin"                                                     # admin login username
     PHOTOPRISM_ADMIN_PASSWORD = "insecure"
-    
     #configurable user settings
     PHOTOPRISM_AUTH_MODE = data.get("PHOTOPRISM_AUTH_MODE","password")                  # authentication mode (public, password)
     PHOTOPRISM_SITE_URL = data.get("PHOTOPRISM_SITE_URL",APP_URL)                       # server URL in the format "http(s)://domain.name(:port)/(path)"
-    PHOTOPRISM_DISABLE_TLS = data.get("PHOTOPRISM_DISABLE_TLS", DISABLE_TLS)            # disables HTTPS/TLS even if the site URL starts with https:// and a certificate is available
+    PHOTOPRISM_DISABLE_TLS = data.get("PHOTOPRISM_DISABLE_TLS", "true")                 # disables HTTPS/TLS even if the site URL starts with https:// and a certificate is available
     PHOTOPRISM_DEFAULT_TLS = data.get("PHOTOPRISM_DEFAULT_TLS", "true")                 # defaults to a self-signed HTTPS/TLS certificate if no other certificate is available
     PHOTOPRISM_ORIGINALS_LIMIT = data.get("PHOTOPRISM_ORIGINALS_LIMIT", 5000)           # file size limit for originals in MB (increase for high-res video)
     PHOTOPRISM_HTTP_COMPRESSION = data.get("PHOTOPRISM_HTTP_COMPRESSION", "gzip")       # improves transfer speed and bandwidth utilization (none or gzip)
@@ -97,6 +95,12 @@ except FileNotFoundError:
     PHOTOPRISM_FFMPEG_BITRATE = data.get("PHOTOPRISM_FFMPEG_BITRATE", "32")             # video bitrate limit in Mbit/s (default: 50)
 
     app_config = {
+    "PHOTOPRISM_DATABASE_SERVER":PHOTOPRISM_DATABASE_SERVER,
+    "PHOTOPRISM_DATABASE_NAME":PHOTOPRISM_DATABASE_NAME,
+    "PHOTOPRISM_DATABASE_USER":PHOTOPRISM_DATABASE_USER,
+    "PHOTOPRISM_DATABASE_PASSWORD":PHOTOPRISM_DATABASE_PASSWORD,
+    "PHOTOPRISM_ADMIN_USER":PHOTOPRISM_ADMIN_USER,
+    "PHOTOPRISM_ADMIN_PASSWORD":PHOTOPRISM_ADMIN_PASSWORD,
     "PHOTOPRISM_AUTH_MODE":PHOTOPRISM_AUTH_MODE,
     "PHOTOPRISM_SITE_URL":PHOTOPRISM_SITE_URL,
     "PHOTOPRISM_DISABLE_TLS":PHOTOPRISM_DISABLE_TLS,
