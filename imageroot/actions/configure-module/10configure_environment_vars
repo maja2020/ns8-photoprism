@@ -29,8 +29,8 @@ try:
         if key.lower() in data:
             app_config[key] = data.get(key.lower)
             changed = True
-            sys.stdout.write("changed %s to %s" %(key, value))
-    #if the external traefik url changes
+            sys.stdout.write("changed %s to %s" %(key, app_config[key]))
+    #if the traefik url changes
     if "host" in data: 
         app_config["PHOTOPRISM_SITE_URL"]="https://" + data.get("host")
         changed = True    

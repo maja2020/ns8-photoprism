@@ -17,7 +17,7 @@ Output example:
 
     {"module_id": "photoprism1", "image_name": "photoprism", "image_url": "ghcr.io/maja2020/photoprism:latest"}
 
-## Configure
+## Configure nethserver module
 ```
 api-cli run configure-module --agent module/photoprism1 --data - <<EOF
 {
@@ -28,7 +28,6 @@ Example:
 }
 EOF
 ```
-
 The above command will:
 - Start and configure the photoprism instance with the right traefik settings. 
 - First start wil create an empty mysql database and configure photoprism with default settings. 
@@ -37,18 +36,23 @@ The above command will:
 ```
   -> Settings - Account - Change password.
 ```
+## Configure photoprism
+Photoprism has a ton of configuration options. See https://dl.photoprism.app/podman/docker-compose.yml for a complete list.
+- PHOTPRISM_SITE_URL parameter will automaically be set to the configured "host" parameter. Do not change.
+- Many of the configuration options can be changed in de photoprism UI Settings.
+- PHOTOPRISM INIT forces software updates at container startup and slows down container startup. Is untested and therefore disabled.
+- Video transcoding settings are not enabled, is a whole different category and hardware dependent. Slow, but no specific hardware requirements: it just works.
+
 View current photoprism settings: 
 ```
 runagent -m photoprism1 cat photoprism.env
 ```
 
-To change a configuration option launch `configure-module`, by setting parameters in non-caps. 
-
+To change a configuration option launch `configure-module`, type env-settings in lowercase.
 Example:
 ```
     api-cli run configure-module --agent module/photoprism1 --data '{"photoprism_log_level":"debug"}'
 ```
-PHOTPRISM_SITE_URL parameter will automaically be set to the configured "host" parameter.
 
 ## Uninstall
 
