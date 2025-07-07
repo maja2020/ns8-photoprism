@@ -65,6 +65,7 @@ except FileNotFoundError:
     PHOTOPRISM_DISABLE_TLS = data.get("PHOTOPRISM_DISABLE_TLS", "true")                 # disables HTTPS/TLS even if the site URL starts with https:// and a certificate is available
     PHOTOPRISM_DEFAULT_TLS = data.get("PHOTOPRISM_DEFAULT_TLS", "true")                 # defaults to a self-signed HTTPS/TLS certificate if no other certificate is available
     PHOTOPRISM_ORIGINALS_LIMIT = data.get("PHOTOPRISM_ORIGINALS_LIMIT", 5000)           # file size limit for originals in MB (increase for high-res video)
+    PHOTOPRISM_RESOLUTION_LIMIT = data.get("PHOTOPRISM_RESOLUTION_LIMIT", 150)          # maximum resolution of media files in MEGAPIXELS (1-900; -1 to disable)
     PHOTOPRISM_HTTP_COMPRESSION = data.get("PHOTOPRISM_HTTP_COMPRESSION", "gzip")       # improves transfer speed and bandwidth utilization (none or gzip)
     PHOTOPRISM_LOG_LEVEL = data.get("PHOTOPRISM_LOG_LEVEL", "info")                     # log level: trace, debug, info, warning, error, fatal, or panic
     PHOTOPRISM_READONLY = data.get("PHOTOPRISM_READONLY", "false")                      # do not modify originals directory (reduced functionality)
@@ -85,8 +86,11 @@ except FileNotFoundError:
     PHOTOPRISM_INDEX_SCHEDULE = data.get("PHOTOPRISM_INDEX_SCHEDULE", "")               # indexing SCHEDULE in cron format (e.g. "@every 3h" for every 3 hours; "" to disable)
     PHOTOPRISM_AUTO_INDEX = data.get("PHOTOPRISM_AUTO_INDEX", 300)                      # delay before automatically indexing files in SECONDS when uploading via WebDAV (-1 to disable)
     PHOTOPRISM_AUTO_IMPORT = data.get("PHOTOPRISM_AUTO_IMPORT", -1)                     # delay before automatically importing files in SECONDS when uploading via WebDAV (-1 to disable)
+    PHOTOPRISM_IMPORT_ALLOW = data.get("PHOTOPRISM_IMPORT_ALLOW", "")                   # restrict imports to these file types (comma-separated list of EXTENSIONS; leave blank to allow all)
     PHOTOPRISM_DETECT_NSFW = data.get("PHOTOPRISM_DETECT_NSFW", "false")                # automatically flags photos as private that MAY be offensive (requires TensorFlow)
     PHOTOPRISM_UPLOAD_NSFW = data.get("PHOTOPRISM_UPLOAD_NSFW", "true")                 # allows uploads that MAY be offensive (no effect without TensorFlow)
+    PHOTOPRISM_UPLOAD_ARCHIVES = data.get("PHOTOPRISM_UPLOAD_ARCHIVES")                 # allow upload of zip archives (will be extracted before import)
+    PHOTOPRISM_UPLOAD_LIMIT = data.get("PHOTOPRISM_UPLOAD_LIMIT"),                      # maximum total size of uploaded files in MB (1-100000; -1 to disable)
     PHOTOPRISM_SITE_CAPTION = data.get("PHOTOPRISM_SITE_CAPTION", "AI-Powered Photos App")
     PHOTOPRISM_SITE_DESCRIPTION = data.get("PHOTOPRISM_SITE_DESCRIPTION", "")           # meta site description
     PHOTOPRISM_SITE_AUTHOR = data.get("PHOTOPRISM_SITE_AUTHOR", "")                     # meta site author
@@ -95,6 +99,7 @@ except FileNotFoundError:
     PHOTOPRISM_FFMPEG_BITRATE = data.get("PHOTOPRISM_FFMPEG_BITRATE", "32")             # video bitrate limit in Mbit/s (default: 50)
     #PHOTOPRISM_INIT = data.get("PHOTOPRISM_INIT", "https ffmpeg davfs tensorflow")     # Run/install on first startup
     app_config = {
+    "PHOTOPRISM_DATABASE_DRIVER":PHOTOPRISM_DATABASE_DRIVER,
     "PHOTOPRISM_DATABASE_SERVER":PHOTOPRISM_DATABASE_SERVER,
     "PHOTOPRISM_DATABASE_NAME":PHOTOPRISM_DATABASE_NAME,
     "PHOTOPRISM_DATABASE_USER":PHOTOPRISM_DATABASE_USER,
@@ -106,6 +111,7 @@ except FileNotFoundError:
     "PHOTOPRISM_DISABLE_TLS":PHOTOPRISM_DISABLE_TLS,
     "PHOTOPRISM_DEFAULT_TLS":PHOTOPRISM_DEFAULT_TLS,
     "PHOTOPRISM_ORIGINALS_LIMIT":PHOTOPRISM_ORIGINALS_LIMIT,
+    "PHOTOPRISM_RESOLUTION_LIMIT":PHOTOPRISM_RESOLUTION_LIMIT,
     "PHOTOPRISM_HTTP_COMPRESSION":PHOTOPRISM_HTTP_COMPRESSION,
     "PHOTOPRISM_LOG_LEVEL":PHOTOPRISM_LOG_LEVEL,
     "PHOTOPRISM_READONLY":PHOTOPRISM_READONLY,
@@ -126,8 +132,11 @@ except FileNotFoundError:
     "PHOTOPRISM_INDEX_SCHEDULE":PHOTOPRISM_INDEX_SCHEDULE,
     "PHOTOPRISM_AUTO_INDEX":PHOTOPRISM_AUTO_INDEX,
     "PHOTOPRISM_AUTO_IMPORT":PHOTOPRISM_AUTO_IMPORT,
+    "PHOTOPRISM_IMPORT_ALLOW":PHOTOPRISM_IMPORT_ALLOW,
     "PHOTOPRISM_DETECT_NSFW":PHOTOPRISM_DETECT_NSFW,
     "PHOTOPRISM_UPLOAD_NSFW":PHOTOPRISM_UPLOAD_NSFW,
+    "PHOTOPRISM_UPLOAD_ARCHIVES":PHOTOPRISM_UPLOAD_ARCHIVES,
+    "PHOTOPRISM_UPLOAD_LIMIT":PHOTOPRISM_UPLOAD_LIMIT,
     "PHOTOPRISM_SITE_CAPTION":PHOTOPRISM_SITE_CAPTION,
     "PHOTOPRISM_SITE_DESCRIPTION":PHOTOPRISM_SITE_DESCRIPTION,
     "PHOTOPRISM_SITE_AUTHOR":PHOTOPRISM_SITE_AUTHOR,
