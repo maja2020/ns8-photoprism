@@ -7,38 +7,14 @@
       {
         "host": "photoprism.yourdomain.org",
         "lets_encrypt": false,
-        "http2https": false,
-        "photoprism_originals_limit": 5000,
-        "photoprism_resolution_limit": 150,
-        "photoprism_import_allow": true,
-        "photoprism_detect_nsfw": false,
-        "photoprism_upload_nsfw": true,
-        "photoprism_upload_archives": true,
-        "photoprism_upload_limit": 1000,
-        "photoprism_disable_settings": false,
-        "photoprism_disable_faces": false,
-        "photoprism_auto_index": 300,
-        "photoprism_index_schedule": "@every 3h",
-        "photoprism_auto_import": 300 
+        "http2https": false
       }
     ],
     "type": "object",
     "required": [
       "host",
       "lets_encrypt",
-      "http2https",
-      "photoprism_originals_limit",
-      "photoprism_resolution_limit",
-      "photoprism_import_allow",
-      "photoprism_detect_nsfw",
-      "photoprism_upload_nsfw",
-      "photoprism_upload_archives",
-      "photoprism_upload_limit",
-      "photoprism_disable_settings",
-      "photoprism_disable_faces",
-      "photoprism_auto_index",
-      "photoprism_auto_import",
-      "photoprism_index_schedule" 
+      "http2https"
     ],
     "properties": {
       "host": {
@@ -56,67 +32,7 @@
         "type": "boolean",
         "title": "HTTP to HTTPS redirection",
         "description": "Redirect all the HTTP requests to HTTPS"
-      },
-      "photoprism_originals_limit": {
-        "type": "integer",
-        "title": "originals limit",
-        "description": "maximum size of media files in MB (1-100000; -1 to disable)"
-      }, 
-      "photoprism_resolution_limit": {
-        "type": "integer",
-        "title": "resolution limit",
-        "description": "maximum resolution of media files in MEGAPIXELS (1-900; -1 to disable)"
-      }, 
-      "photoprism_import_allow": {
-        "type": "string",
-        "title": "allow import for filetype",
-        "pattern": "^([a-zA-Z0-9]+)(,[a-zA-Z0-9]+)*$",
-        "description": "restrict imports to these file types (comma-separated list of EXTENSIONS; leave blank to allow all)"
-      }, 
-      "photoprism_detect_nsfw": {
-        "type": "boolean",
-        "title": "detect NSFW",
-        "description": "flag newly added pictures as private if they might be offensive"
-      }, 
-      "photoprism_upload_nsfw": {
-        "type": "boolean",
-        "title": "upload NSFW",
-        "description": "allow uploads that might be offensive"
-      },
-       "photoprism_upload_archives": {
-        "type": "boolean",
-        "title": "upload zip archives",
-        "description": "allow upload of zip archives, will be extracted before import"
-      },
-       "photoprism_upload_limit": {
-        "type": "integer",
-        "title": "max total filesize of upload",
-        "description": "maximum total size of uploaded files in MB (1-100000; -1 to disable)"
-      },
-       "photoprism_disable_settings": {
-        "type": "boolean",
-        "title": "disable settings",
-        "description": "disable the settings user interface and server API, e.g. in combination with public mode"
-      },
-       "photoprism_disable_faces": {
-        "type": "boolean",
-        "title": "disable faces",
-        "description": "disable face detection and recognition"
-      },
-       "photoprism_auto_index": {
-        "type": "integer",
-        "title": "disable auto index",
-        "description": "delay before automatically indexing files in SECONDS when uploading via WebDAV (-1 to disable)"
-      },
-       "photoprism_auto_import": {
-        "type": "integer",
-        "title": "disable auto import",
-        "description": "delay before automatically importing files in SECONDS when uploading via WebDAV (-1 to disable)"
-      },
-       "photoprism_index_schedule": {
-        "type": "string",
-        "title": "crontab schedule for auto indexing",
-        "description": "indexing SCHEDULE in cron format (e.g. '@every 3h' for every 3 hours; leave blank to disable)"
       }
+      
     }
   }
