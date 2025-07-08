@@ -5,4 +5,4 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
 
-systemctl --user try-restart node-red.service
+systemctl --user try-restart photoprism.service
