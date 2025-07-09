@@ -14,14 +14,8 @@ import agent
 data = json.load(sys.stdin)
 
 try:
-    app_config = agent.read_envfile("mariadb.env")
-except FileNotFoundError:
-    #not configured?
-    sys.stdout.write('module creation failed: mariadb.env not configured')
-    exit(2)
-
-try:
-    app_config = agent.read_envfile("photoprism.env")
+    env_file = os.getenv("AGENT_INSTALL_DIR") + "/state/photoprism.env"
+    app_config = agent.read_envfile(env_file)
     #change corresponding values in the app_config and write to file if anything changed
     #input is a lower key, output in env file is upper version
     changed = False
@@ -30,12 +24,14 @@ try:
             app_config[key] = data.get(key.lower())
             changed = True
             sys.stdout.write("changed %s to %s" %(key, app_config[key]))
+        else:
+            sys.stdout.write("key %s not found!" %(key))
     #if the traefik url changes
     if "host" in data: 
         app_config["PHOTOPRISM_SITE_URL"]="https://" + data.get("host")
         changed = True    
-    if changed: agent.write_envfile("photoprism.env", app_config)
+    if changed: agent.write_envfile(env_file, app_config)
 except FileNotFoundError:
     #should already be there
-    sys.stdout.write('module creation failed: photoprism.env not configured')
+    sys.stdout.write('photoprism.env not configuredfound, no changes made')
     exit(2)

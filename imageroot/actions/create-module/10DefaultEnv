@@ -52,7 +52,7 @@ except FileNotFoundError:
     #photoprism user settings, all defaults as of 2025-06-28 (for now adjustable by configure-module command, ui is for version 2)
     #https://dl.photoprism.app/podman/docker-compose.yml
     #non-configurable settings:
-    PHOTOPRISM_DATABASE_DRIVER = "mysql"                                                # MariaDB 10.5.12+ (MySQL successor) offers significantly better performance compared to SQLite
+    #PHOTOPRISM_DATABASE_DRIVER = "mysql"                                                # MariaDB 10.5.12+ (MySQL successor) offers significantly better performance compared to SQLite
     PHOTOPRISM_DATABASE_SERVER = "mariadb:3306"                                         # MariaDB database server (hostname:port)
     PHOTOPRISM_DATABASE_NAME = mariadb_env.get("MARIADB_DATABASE")                      # MariaDB database schema name
     PHOTOPRISM_DATABASE_USER = mariadb_env.get("MARIADB_USER")                          # MariaDB database user name
