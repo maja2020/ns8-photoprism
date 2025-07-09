@@ -24,7 +24,6 @@ api-cli run configure-module --agent module/photoprism1 --data - <<EOF
   "host": "myphotoprism.domain.com",
   "http2https": true,
   "lets_encrypt": false
-Example:
 }
 EOF
 ```
@@ -51,7 +50,14 @@ runagent -m photoprism1 cat photoprism.env
 To change a configuration option launch `configure-module`, type env-settings in lowercase.
 Example:
 ```
-api-cli run module/photoprism1/configure-module --data '{"photoprism_site_caption": "My site caption","photoprism_site_description": "my site description","photoprism_site_author": "YourAlias"}'
+runagent -m photoprism27 python ../bin/configure_environment_vars <<EOF
+{
+	"photoprism_site_caption": "caption",
+	"photoprism_site_description": "site_description",
+	"photoprism_site_author": "Yourname or Alias"
+}
+EOF
+
 ```
 
 ## Uninstall

@@ -24,15 +24,14 @@ try:
         if key.lower() in data:
             app_config[key] = data.get(key.lower())
             changed = True
-            sys.stdout.write("changed %s to %s" %(key, app_config[key]))
-        else:
-            sys.stdout.write("key %s not found!" %(key))
+            sys.stdout.write("changed %s --> %s" %(key, app_config[key]))
     #if the traefik url changes
     if "host" in data: 
         app_config["PHOTOPRISM_SITE_URL"]="https://" + data.get("host")
         changed = True    
     if changed: agent.write_envfile(env_file, app_config)
+    else: sys.stdout.write("No changes made to %s" %env_file)
 except FileNotFoundError:
     #should already be there
-    sys.stdout.write('%s not found, no changes made', env_file)
+    sys.stdout.write("%s not found, no changes made" %env_file)
     exit(0)
