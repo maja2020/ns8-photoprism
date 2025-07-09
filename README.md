@@ -51,19 +51,18 @@ runagent -m photoprism1 cat photoprism.env
 To change a configuration option launch `configure-module`, type env-settings in lowercase.
 Example:
 ```
-    api-cli run configure-module --agent module/photoprism1 --data '{"photoprism_log_level":"debug"}'
+api-cli run module/photoprism1/configure-module --data '{"photoprism_site_caption": "My site caption","photoprism_site_description": "my site description","photoprism_site_author": "YourAlias"}'
 ```
 
 ## Uninstall
 
 To uninstall the instance:
 
-    remove-module --no-preserve kickstart1
+    remove-module --no-preserve photoprism1
 
 ## Testing
 
 Test the module using the `test-module.sh` script:
-
 
     ./test-module.sh <NODE_ADDR> ghcr.io/nethserver/kickstart:latest
 
