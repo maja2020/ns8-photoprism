@@ -7,20 +7,14 @@
       {
         "host": "photoprism.yourdomain.org",
         "lets_encrypt": false,
-        "http2https": false,
-        "photoprism_site_caption": "AI-Powered Photos App",
-        "photoprism_site_description": "META site description",
-        "photoprism_site_author": "Meta site author"
+        "http2https": false
       }
     ],
     "type": "object",
     "required": [
       "host",
       "lets_encrypt",
-      "http2https",
-      "photoprism_site_caption",
-      "photoprism_site_description",
-      "photoprism_site_author"
+      "http2https"
     ],
     "properties": {
       "host": {
@@ -38,21 +32,6 @@
         "type": "boolean",
         "title": "HTTP to HTTPS redirection",
         "description": "Redirect all the HTTP requests to HTTPS"
-      },
-      "photoprism_site_caption": {
-        "type": "string",
-        "title": "Site caption",
-        "description": "Caption of the site, used in the meta tag"
-      },
-      "photoprism_site_athor": {
-        "type": "string",
-        "title": "Site author",
-        "description": "meta site author"
-      },
-      "photoprism_site_description": {
-        "type": "string",
-        "title": "Site description",
-        "description": "meta site description"
-      }  
+      }
     }
   }
