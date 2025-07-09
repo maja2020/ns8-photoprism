@@ -13,8 +13,9 @@ import agent
 # If parsing fails, output everything to stderr
 data = json.load(sys.stdin)
 
+
+env_file = os.path.join(os.getenv("AGENT_STATE_DIR"),"photoprism.env")
 try:
-    env_file = os.getenv("AGENT_INSTALL_DIR") + "/state/photoprism.env"
     app_config = agent.read_envfile(env_file)
     #change corresponding values in the app_config and write to file if anything changed
     #input is a lower key, output in env file is upper version
@@ -33,5 +34,5 @@ try:
     if changed: agent.write_envfile(env_file, app_config)
 except FileNotFoundError:
     #should already be there
-    sys.stdout.write('photoprism.env not configuredfound, no changes made')
-    exit(2)
+    sys.stdout.write('%s not found, no changes made', env_file)
+    exit(0)
