@@ -10,12 +10,12 @@ This is the free version. Additional functionality, available in support plans l
 
 Instantiate the module with:
 
-    add-module ghcr.io/maja2020/photoprism:latest 1
+    add-module ghcr.io/maja2020/photoprism:0.1.1 1
 
 The output of the command will return the instance name.
 Output example:
 
-    {"module_id": "photoprism1", "image_name": "photoprism", "image_url": "ghcr.io/maja2020/photoprism:latest"}
+    {"module_id": "photoprism1", "image_name": "photoprism", "image_url": "ghcr.io/maja2020/photoprism:0.1.1"}
 
 ## Configure nethserver module
 ```
