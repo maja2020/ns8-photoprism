@@ -8,6 +8,7 @@ This is the free version. Additional functionality, available in support plans l
 
 ## Install
 
+
 Instantiate the module with:
 
     add-module ghcr.io/maja2020/photoprism:0.1.1 1
