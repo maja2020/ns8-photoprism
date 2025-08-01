@@ -1,8 +1,37 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "get-configuration output",
-    "$id": "http://schema.nethserver.org/kickstart/get-configuration-output.json",
-    "description": "Get kickstart configuration",
-    "examples": [],
-    "type": "object"
-}
+    "$id": "http://nethserver.org/json-schema/task/input/photoprism/configure",
+    "description": "Get photoprism configuration",
+    "examples": [
+      {
+        "host": "photoprism.yourdomain.org",
+        "lets_encrypt": false,
+        "http2https": false
+      }
+    ],
+    "type": "object",
+    "required": [
+      "host",
+      "lets_encrypt",
+      "http2https"
+    ],
+    "properties": {
+      "host": {
+        "type": "string",
+        "description": "Host name for photoprism, like 'photoprism.yourdomain.org'",
+        "format": "hostname",
+        "pattern": "\\."
+      },
+      "lets_encrypt": {
+        "type": "boolean",
+        "title": "Let's Encrypt certificate",
+        "description": "Request a valid Let's Encrypt certificate."
+      },
+      "http2https": {
+        "type": "boolean",
+        "title": "HTTP to HTTPS redirection",
+        "description": "Redirect all the HTTP requests to HTTPS"
+      }
+    }
+  }

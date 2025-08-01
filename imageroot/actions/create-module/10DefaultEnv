@@ -91,6 +91,7 @@ except FileNotFoundError:
     PHOTOPRISM_UPLOAD_NSFW = data.get("PHOTOPRISM_UPLOAD_NSFW", "true")                 # allows uploads that MAY be offensive (no effect without TensorFlow)
     PHOTOPRISM_UPLOAD_ARCHIVES = data.get("PHOTOPRISM_UPLOAD_ARCHIVES", "true")         # allow upload of zip archives (will be extracted before import)
     PHOTOPRISM_UPLOAD_LIMIT = data.get("PHOTOPRISM_UPLOAD_LIMIT", 1000)                 # maximum total size of uploaded files in MB (1-100000; -1 to disable)
+    PHOTOPRISM_UPLOAD_ALLOW = data.get("PHOTOPRISM_UPLOAD_ALLOW", "")                   # restrict uploads to these file types (comma-separated list of EXTENSIONS; leave blank to allow all)
     PHOTOPRISM_SITE_CAPTION = data.get("PHOTOPRISM_SITE_CAPTION", "AI-Powered Photos App")
     PHOTOPRISM_SITE_DESCRIPTION = data.get("PHOTOPRISM_SITE_DESCRIPTION", "")           # meta site description
     PHOTOPRISM_SITE_AUTHOR = data.get("PHOTOPRISM_SITE_AUTHOR", "")                     # meta site author
@@ -137,6 +138,7 @@ except FileNotFoundError:
     "PHOTOPRISM_UPLOAD_NSFW":PHOTOPRISM_UPLOAD_NSFW,
     "PHOTOPRISM_UPLOAD_ARCHIVES":PHOTOPRISM_UPLOAD_ARCHIVES,
     "PHOTOPRISM_UPLOAD_LIMIT":PHOTOPRISM_UPLOAD_LIMIT,
+    "PHOTOPRISM_UPLOAD_ALLOW":PHOTOPRISM_UPLOAD_ALLOW,
     "PHOTOPRISM_SITE_CAPTION":PHOTOPRISM_SITE_CAPTION,
     "PHOTOPRISM_SITE_DESCRIPTION":PHOTOPRISM_SITE_DESCRIPTION,
     "PHOTOPRISM_SITE_AUTHOR":PHOTOPRISM_SITE_AUTHOR,

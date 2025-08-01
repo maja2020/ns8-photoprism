@@ -51,7 +51,7 @@ runagent -m photoprism1 cat photoprism.env
 To change a configuration option launch `configure-module`, type env-settings in lowercase.
 Example:
 ```
-runagent -m photoprism27 python ../bin/configure_environment_vars <<EOF
+runagent -m photoprism1 python ../bin/configure_environment_vars <<EOF
 {
 	"photoprism_site_caption": "caption",
 	"photoprism_site_description": "site_description",
@@ -71,7 +71,7 @@ To uninstall the instance:
 
 Test the module using the `test-module.sh` script:
 
-    ./test-module.sh <NODE_ADDR> ghcr.io/nethserver/kickstart:latest
+    ./test-module.sh <NODE_ADDR> ghcr.io/maja2020/ns8-photoprism:latest
 
 The tests are made using [Robot Framework](https://robotframework.org/)
 
