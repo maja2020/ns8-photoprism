@@ -19,9 +19,9 @@ ExecStart=/usr/bin/podman run --conmon-pidfile %t/photoprism-app.pid \
 	--cidfile %t/photoprism-app.ctr-id --cgroups=no-conmon --pod-id-file %t/photoprism.pod-id \
 	--replace -d --name  photoprism-app \
 	--env-file=photoprism.env \
-	--volume originals:/photoprism/originals \
-	--volume import:/photoprism/import \
-	--volume storage:/photoprism/storage \
+	--volume originals:/photoprism/originals:Z \
+	--volume import:/photoprism/import:Z \
+	--volume storage:/photoprism/storage:Z \
 	${PHOTOPRISM_IMAGE}
 ExecStop=/usr/bin/podman stop --ignore --cidfile %t/photoprism-app.ctr-id -t 10
 ExecReload=/usr/bin/podman kill -s HUP photoprism-app
