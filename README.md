@@ -8,10 +8,9 @@ This is the free version. Additional functionality, available in support plans l
 
 ## Install
 
-
 Instantiate the module with:
 
-    add-module ghcr.io/maja2020/photoprism:0.1.1 1
+    add-module ghcr.io/maja2020/photoprism:latest 1
 
 The output of the command will return the instance name.
 Output example:
@@ -32,7 +31,7 @@ The above command will:
 - Start and configure the photoprism instance with the right traefik settings. 
 - First start wil create an empty mysql database and configure photoprism with default settings. 
 - The default photoprism login is user:admin passwd:insecure. This is the photoprism default. 
-- Change password ASAP at first logon to photoprism 
+**<span style="color:red;">Change password ASAP at first logon to photoprism</span>** 
 ```
   -> Settings - Account - Change password.
 ```
@@ -67,11 +66,17 @@ To uninstall the instance:
 
     remove-module --no-preserve photoprism1
 
+
+## Update
+To update the instance (command line only for now)
+
+    api-cli run update-module --data '{"module_url":"ghcr.io/maja2020/photoprism","instances":["photoprism1"],"force":true}'        
+
 ## Testing
 
 Test the module using the `test-module.sh` script:
 
-    ./test-module.sh <NODE_ADDR> ghcr.io/maja2020/ns8-photoprism:latest
+    ./test-module.sh <NODE_ADDR> ghcr.io/maja2020/photoprism:latest
 
 The tests are made using [Robot Framework](https://robotframework.org/)
 
