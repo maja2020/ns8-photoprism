@@ -1,19 +1,19 @@
 {
   "name": "Photoprism",
   "description": {
-    "en": "Photoprism 4 ns8"
+    "en": "Photoprism ns8 module"
   },
   "categories": [],
   "authors": [
     {
-      "name": "Maja2020",
+      "name": "maja2020",
       "email": "maja2020@gmx.com"
     }
   ],
   "docs": {
-    "documentation_url": "n/a",
-    "bug_url": "n/a",
-    "code_url": "n/a"
+    "documentation_url": "https://docs.photoprism.app/user-guide/index.html",
+    "bug_url": "https://github.com/maja2020/ns8-photoprism/issues",
+    "code_url": "https://github.com/maja2020/ns8-photoprism"
   },
-  "source": "ghcr.io/maja2020/ns8-photoprism"
+  "source": "ghcr.io/maja2020/photoprism"
 }
