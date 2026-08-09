@@ -14,6 +14,7 @@ import os
 # If parsing fails, output everything to stderr
 data = json.load(sys.stdin)
 
+#change any parameter present in the env file
 env_file = os.path.join(os.getenv("AGENT_STATE_DIR"),"photoprism.env")
 try:
     app_config = agent.read_envfile(env_file)
