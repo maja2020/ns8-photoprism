@@ -46,18 +46,9 @@ View current photoprism settings:
 ```
 runagent -m photoprism1 cat photoprism.env
 ```
-
-To change a configuration option launch `configure-module`, type env-settings in lowercase.
-Example:
+Edit current photoprism settings:
 ```
-runagent -m photoprism1 python ../bin/configure_environment_vars <<EOF
-{
-	"photoprism_site_caption": "caption",
-	"photoprism_site_description": "site_description",
-	"photoprism_site_author": "Yourname or Alias"
-}
-EOF
-
+runagent -m photoprism1 vim photoprism.env
 ```
 
 ## Uninstall
