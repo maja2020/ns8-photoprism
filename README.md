@@ -73,4 +73,4 @@ To update the instance (command line only for now)
     api-cli run update-module --data '{"module_url":"ghcr.io/maja2020/photoprism","instances":["photoprism1"],"force":true}'        
 To restart the application:
     systemctl stop user@$(id -u photoprism1)
-    systemctl start user@$(id -u photoprism2)
+    systemctl start user@$(id -u photoprism1)

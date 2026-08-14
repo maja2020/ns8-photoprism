@@ -40,7 +40,7 @@ buildah config --entrypoint=/ \
     --label="org.nethserver.tcp-ports-demand=1" \
     --label="org.nethserver.rootfull=0" \
     --label="org.nethserver.min-core=3.12.4-0" \
-    --label="org.nethserver.images=docker.io/mariadb:11 docker.io/photoprism/photoprism:260728
+    --label="org.nethserver.images=docker.io/mariadb:12.3 docker.io/photoprism/photoprism:260728
 " \
     "${container}"
 # Commit the image
