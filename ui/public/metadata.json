@@ -1,19 +1,19 @@
 {
-  "name": "Photoprism",
+  "name": "kickstart",
   "description": {
-    "en": "Photoprism ns8 module"
+    "en": "My kickstart module"
   },
   "categories": [],
   "authors": [
     {
-      "name": "maja2020",
-      "email": "maja2020@gmx.com"
+      "name": "Name Surname",
+      "email": "author@yourmail.org"
     }
   ],
   "docs": {
-    "documentation_url": "https://docs.photoprism.app/user-guide/index.html",
-    "bug_url": "https://github.com/maja2020/ns8-photoprism/issues",
-    "code_url": "https://github.com/maja2020/ns8-photoprism"
+    "documentation_url": "https://docs.kickstart.com/",
+    "bug_url": "https://github.com/NethServer/dev",
+    "code_url": "https://github.com/author/ns8-kickstart"
   },
-  "source": "ghcr.io/maja2020/photoprism"
+  "source": "ghcr.io/nethserver/kickstart"
 }
