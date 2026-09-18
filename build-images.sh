@@ -25,11 +25,7 @@ if ! buildah containers --format "{{.ContainerName}}" | grep -q nodebuilder-phot
 fi
 
 echo "Build static UI files with node..."
-buildah run \
-    --workingdir=/usr/src/ui \
-    --env="NODE_OPTIONS=--openssl-legacy-provider" \
-    nodebuilder-photoprism \
-    sh -c "yarn install && yarn build"
+buildah run --env="NODE_OPTIONS=--openssl-legacy-provider" nodebuilder-photoprism sh -c "cd /usr/src/ui && corepack enable && yarn install && yarn build"
 
 # Add imageroot directory to the container image
 buildah add "${container}" imageroot /imageroot
