@@ -8,7 +8,10 @@
         "website_name": "My PhotoPrism",
         "website_title": "PhotoPrism",
         "website_caption": "AI-Powered Photos App",
-        "admin_password": "MySecretPassword",
+        "website_description": "Google Photos alternative powered by AI, running in your own home or cloud server.",
+        "website_author": "YourWebsiteAuthor",
+        "admin_user": "admin",
+        "admin_password": "TheVeryLongSentenceIllNeverForget",
         "host": "photoprism.yourdomain.org",
         "lets_encrypt": false,
         "http2https": false
@@ -19,7 +22,9 @@
       "website_name",
       "website_title",
       "website_caption",
-      "admin_username",
+      "website_description",
+      "website_author",
+      "admin_user",
       "admin_password",
       "host",
       "lets_encrypt",
@@ -38,7 +43,15 @@
             "type": "string",
             "description": "Caption for the website"
         },
-        "admin_username": {
+        "website_description": {
+            "type": "string",
+            "description": "Description of the website"
+        },
+        "website_author": {
+            "type": "string",
+            "description": "Author of the website"
+        },
+        "admin_user": {
             "type": "string",
             "description": "Username for the administrator user"
         },
