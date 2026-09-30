@@ -20,51 +20,67 @@ Output example:
 ## Configure nethserver module
 ```
 api-cli run configure-module --agent module/photoprism1 --data - <<EOF
-{
-  "host": "myphotoprism.domain.com",
+{ "website_name": "Mytestname",
+  "website_title": "MytestTitle",
+  "website_caption": "MytestCaption",
+  "admin_user":"admin",
+  "admin_password":"TheveryLongSentenceIllNeverForget",
+  "website_description":"MytestDescription",
+  "website_author":"MyTestAuthor",
+  "host": "webtest.incanto.info",
   "http2https": true,
   "lets_encrypt": false
 }
 EOF
 ```
+The values admin_password, host, lets_encrypt and http2https are mandatory.
 The above command will:
 - Start and configure the photoprism instance with the right traefik settings. 
 - First start wil create an empty mysql database and configure photoprism with default settings. 
-- The default photoprism login is user:admin passwd:insecure. This is the photoprism default. 
-**<span style="color:red;">Change password ASAP at first logon to photoprism</span>** 
+- If you used above example password: **<span style="color:red;">Change password ASAP at first logon</span>**. Hackers read this repository too.
 ```
   -> Settings - Account - Change password.
 ```
 ## Configure photoprism
-Photoprism has a ton of configuration options. See https://dl.photoprism.app/podman/docker-compose.yml for a complete list.
-- PHOTPRISM_SITE_URL parameter will automaically be set to the configured "host" parameter. Do not change.
-- Many of the configuration options can be changed in de photoprism UI Settings.
-- PHOTOPRISM INIT forces software updates at container startup and slows down container startup. Is untested and therefore disabled.
-- Video transcoding settings are not enabled, is a whole different category and hardware dependent. Slow, but no specific hardware requirements: it just works.
+Photoprism has a ton of configuration options. See https://dl.photoprism.app/docker/docker-compose.yml for a complete list.
+- PHOTPRISM_SITE_URL parameter will automatically be set to the configured "host" parameter. Do not change.
+- Many of the configuration options can be changed in de photoprism UI (advanced) settings pages.
+- Photoprism forces software updates at container startup. Check the logs. 
+- Video transcoding settings and AI integration are not enabled, this is a whole different category and hardware dependent. Adjust as needed in photoprism.env.
 
-View current photoprism settings: 
+View current photoprism settings:
 ```
-runagent -m photoprism1 cat photoprism.env
+runagent -m photoprism<instance_id> cat photoprism.env
+runagent -m $(ls /home | grep photoprism) cat photoprism.env
 ```
+View photoprism logs:
+```
+journalctl _UID=$(id -u photoprism<instance_id>)
+journalctl _UID=$(id -u $(ls /home|grep photoprism))
+```
+
 Edit current photoprism settings:
 ```
-runagent -m photoprism1 vim photoprism.env
+runagent -m photoprism<photoprism<instance_id> vim photoprism.env
+runagent -m $(ls /home | grep photoprism) vim photoprism.env
 ```
 
 ## Uninstall
 
 To uninstall the instance:
-
-    remove-module --no-preserve photoprism1
-
+'''
+remove-module --no-preserve photoprism1
+'''
 
 ## Update
 To update the instance (command line only for now)
-
+'''
     api-cli run update-module --data '{"module_url":"ghcr.io/maja2020/photoprism","instances":["photoprism1"],"force":true}'        
+'''
 and restart the application:
-    systemctl stop user@$(id -u photoprism1)
-    systemctl start user@$(id -u photoprism1)
+'''
+    systemctl stop user@$(id -u photoprism<instance_id>) &&sleep 10 && systemctl start user@$(id -u photoprism<instance_id>)
+'''
 
 ## Use external disks
 The photoprism library are growing fast. About 4000 random original pictures and movies claims about 20 Gb. My nethserver nodes have a boot volume of 40 Gb. If you want to use local node storage, do nothing.
@@ -79,18 +95,23 @@ The volume assignments on the local host the module expects are:
 - photoprism-import         The import location
 The msql database is stored on the local node.
 
-Add your local mount points for the external shares in /etc/fstab
+Add your local mount points for the external shares in /etc/fstab and make sure its working.
 ''' 
 volumectl add-volume photoprism-originals --target /mnt/<ext. server/share1>/dir1 --for photoprism-originals 
 volumectl add-volume photoprism-import --target /mnt/<ext. server/share1>/dir2 --for photoprism-import 
 volumectl add-volume photoprism-storage --target /mnt/<ext. server/share2>/dir3 --for photoprism-storage
 '''
-Photoprism import moves files around, and writes a lot of data (cache files, sidecar etc.): the import and originals
-- import folder may be located on the same share as the originals folder for performance reasons
-- storage may be located on fast storage (SSD/NVME).
-Example fstab mounts tested with Truenas SMB shares (so you can access the originals folder with foto editing or management software):
-
 Pay special attention to the import folder: photoprism cannot handle imports from a directory inside the "originals".path: [photoprism docs](https://docs.photoprism.app/known-issues/#nested-import-folder).
 
-If you use smb mounts, install cifs-utils:  '''sudo dnf install cifs-utils''' or expect the error "no route to host"
+Photoprism import moves files around, and writes a lot of data (cache files, sidecar etc.):
+- import folder may be located on the same share as the originals folder for performance reasons when moving files.
+- storage may be located on fast storage (SSD/NVME).
+Example fstab mounts tested with Truenas SMB shares (file access via the local network of the originals folder):
+'''
+ToBeDone
+'''
+
+If you use smb mounts, you may want to install cifs-utils:  
+'''sudo dnf install cifs-utils'''
+or expect the very descriptive error "no route to host".
 

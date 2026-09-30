@@ -19,12 +19,6 @@
     ],
     "type": "object",
     "required": [
-      "website_name",
-      "website_title",
-      "website_caption",
-      "website_description",
-      "website_author",
-      "admin_user",
       "admin_password",
       "host",
       "lets_encrypt",
