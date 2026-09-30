@@ -37,7 +37,7 @@ buildah config --entrypoint=/ \
     --label="org.nethserver.volumes=photoprism-originals photoprism-import photoprism-storage" \
     --label="org.nethserver.min-core=3.20.1" \
     --label="org.nethserver.rootfull=0" \
-    --label="org.nethserver.images=docker.io/mariadb:12.3 docker.io/photoprism/photoprism:260728" \
+    --label="org.nethserver.images=docker.io/mariadb:12.3 docker.io/photoprism/photoprism:260919" \
     "${container}"
 # Commit the image
 buildah commit "${container}" "${repobase}/${reponame}"

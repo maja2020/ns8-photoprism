@@ -65,3 +65,32 @@ To update the instance (command line only for now)
 and restart the application:
     systemctl stop user@$(id -u photoprism1)
     systemctl start user@$(id -u photoprism1)
+
+## Use external disks
+The photoprism library are growing fast. About 4000 random original pictures and movies claims about 20 Gb. My nethserver nodes have a boot volume of 40 Gb. If you want to use local node storage, do nothing.
+
+Or: please read following links:
+[redirect-podman named volume mount points](https://github.com/NethServer/ns8-docs/blob/main/docs/tutorial/disk_usage.md#redirect-podman-named-volume-mount-points-named-volume-disk) 
+[this](https://nethserver.github.io/ns8-core/modules/volumes/) in the dev manual
+
+The volume assignments on the local host the module expects are:
+- photoprism-storage        Sidecar files, config, album, user and cache (thumbs) location
+- photoprism-originals      The originals photo library location
+- photoprism-import         The import location
+The msql database is stored on the local node.
+
+Add your local mount points for the external shares in /etc/fstab
+''' 
+volumectl add-volume photoprism-originals --target /mnt/<ext. server/share1>/dir1 --for photoprism-originals 
+volumectl add-volume photoprism-import --target /mnt/<ext. server/share1>/dir2 --for photoprism-import 
+volumectl add-volume photoprism-storage --target /mnt/<ext. server/share2>/dir3 --for photoprism-storage
+'''
+Photoprism import moves files around, and writes a lot of data (cache files, sidecar etc.): the import and originals
+- import folder may be located on the same share as the originals folder for performance reasons
+- storage may be located on fast storage (SSD/NVME).
+Example fstab mounts tested with Truenas SMB shares (so you can access the originals folder with foto editing or management software):
+
+Pay special attention to the import folder: photoprism cannot handle imports from a directory inside the "originals".path: [photoprism docs](https://docs.photoprism.app/known-issues/#nested-import-folder).
+
+If you use smb mounts, install cifs-utils:  '''sudo dnf install cifs-utils''' or expect the error "no route to host"
+

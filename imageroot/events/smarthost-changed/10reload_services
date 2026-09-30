@@ -7,4 +7,7 @@
 
 set -e
 
-systemctl --user try-reload-or-restart photoprism.service
+#systemctl --user try-reload-or-restart photoprism.service
+systemctl --user stop photoprism.service
+sleep 15
+systemctl --user start photoprism.service
