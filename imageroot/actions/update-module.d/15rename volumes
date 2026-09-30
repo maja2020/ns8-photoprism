@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+
+#
+# Copyright (C) 2026 Nethesis S.r.l.
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+#before starting services, make sure the new volume paths exist. This preserves the data.
+
+import pathlib
+import subprocess
+import sys
+
+VOLUME_NAMES = (
+    ("storage", "photoprism-storage"),
+    ("original", "photoprism-original"),
+    ("import", "photoprism-import"),
+)
+
+
+try:
+    result = subprocess.run(
+        ["podman", "system", "info", "--format={{.Store.VolumePath}}"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+except (OSError, subprocess.CalledProcessError) as error:
+    print("Could not get Podman volume path: {}".format(error), file=sys.stderr)
+    sys.exit(1)
+
+volume_path_text = result.stdout.strip()
+if not volume_path_text:
+    print("Podman returned an empty volume path", file=sys.stderr)
+    sys.exit(1)
+
+volume_path = pathlib.Path(volume_path_text)
+for old_name, new_name in VOLUME_NAMES:
+    old_path = volume_path / old_name
+    new_path = volume_path / new_name
+    if not old_path.exists():
+        continue
+    if new_path.exists():
+        continue
+    old_path.rename(new_path)
+    print("Renamed {} to {}".format(old_path, new_path))
+sys.exit(0)
