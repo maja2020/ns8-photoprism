@@ -25,11 +25,7 @@ if ! buildah containers --format "{{.ContainerName}}" | grep -q nodebuilder-phot
 fi
 
 echo "Build static UI files with node..."
-buildah run \
-    --workingdir=/usr/src/ui \
-    --env="NODE_OPTIONS=--openssl-legacy-provider" \
-    nodebuilder-photoprism \
-    sh -c "yarn install && yarn build"
+buildah run --env="NODE_OPTIONS=--openssl-legacy-provider" nodebuilder-photoprism sh -c "cd /usr/src/ui && corepack enable && yarn install && yarn build"
 
 # Add imageroot directory to the container image
 buildah add "${container}" imageroot /imageroot
@@ -38,10 +34,10 @@ buildah add "${container}" ui/dist /ui
 buildah config --entrypoint=/ \
     --label="org.nethserver.authorizations=traefik@node:routeadm" \
     --label="org.nethserver.tcp-ports-demand=1" \
+    --label="org.nethserver.volumes=photoprism-originals photoprism-import photoprism-storage" \
+    --label="org.nethserver.min-core=3.20.1" \
     --label="org.nethserver.rootfull=0" \
-    --label="org.nethserver.min-core=3.12.4-0" \
-    --label="org.nethserver.images=docker.io/mariadb:12.3 docker.io/photoprism/photoprism:260728
-" \
+    --label="org.nethserver.images=docker.io/mariadb:12.3 docker.io/photoprism/photoprism:260919" \
     "${container}"
 # Commit the image
 buildah commit "${container}" "${repobase}/${reponame}"
@@ -49,17 +45,7 @@ buildah commit "${container}" "${repobase}/${reponame}"
 # Append the image URL to the images array
 images+=("${repobase}/${reponame}")
 
-#
-# NOTICE:
-#
-# It is possible to build and publish multiple images.
-#
-# 1. create another buildah container
-# 2. add things to it and commit it
-# 3. append the image url to the images array
-#
 
-#
 # Setup CI when pushing to Github. 
 # Warning! docker::// protocol expects lowercase letters (,,)
 if [[ -n "${CI}" ]]; then
