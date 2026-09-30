@@ -5,6 +5,10 @@
     "description": "Configure photoprism",
     "examples": [
       {
+        "website_name": "My PhotoPrism",
+        "website_title": "PhotoPrism",
+        "website_caption": "AI-Powered Photos App",
+        "admin_password": "MySecretPassword",
         "host": "photoprism.yourdomain.org",
         "lets_encrypt": false,
         "http2https": false
@@ -12,24 +16,51 @@
     ],
     "type": "object",
     "required": [
-      "host"
+      "website_name",
+      "website_title",
+      "website_caption",
+      "admin_username",
+      "admin_password",
+      "host",
+      "lets_encrypt",
+      "http2https"
     ],
     "properties": {
-      "host": {
-        "type": "string",
-        "description": "Host name for photoprism, like 'photoprism.yourdomain.org'",
-        "format": "hostname",
-        "pattern": "\\."
-      },
-      "lets_encrypt": {
-        "type": "boolean",
-        "title": "Let's Encrypt certificate",
-        "description": "Request a valid Let's Encrypt certificate."
-      },
-      "http2https": {
-        "type": "boolean",
-        "title": "HTTP to HTTPS redirection",
-        "description": "Redirect all the HTTP requests to HTTPS"
-      }
+        "website_name": {
+            "type": "string",
+            "description": "Name of the website"
+        },
+        "website_title": {
+            "type": "string",
+            "description": "Title of the website"
+        },
+        "website_caption": {
+            "type": "string",
+            "description": "Caption for the website"
+        },
+        "admin_username": {
+            "type": "string",
+            "description": "Username for the administrator user"
+        },
+        "admin_password": {
+            "type": "string",
+            "description": "Password for the administrator user"
+        },
+        "host": {
+            "type": "string",
+            "description": "Host name for photoprism, like 'photoprism.yourdomain.org'",
+            "format": "hostname",
+            "pattern": "\\."
+        },
+        "lets_encrypt": {
+            "type": "boolean",
+            "title": "Let's Encrypt certificate",
+            "description": "Request a valid Let's Encrypt certificate."
+        },
+        "http2https": {
+            "type": "boolean",
+            "title": "HTTP to HTTPS redirection",
+            "description": "Redirect all the HTTP requests to HTTPS"
+        }
     }
   }
