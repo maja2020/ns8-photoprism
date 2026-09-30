@@ -87,7 +87,7 @@ The photoprism library storage grows fast. About 4000 random original pictures a
 
 Configure the host to use external storage for photoprism: please read following links:
 [redirect-podman named volume mount points](https://github.com/NethServer/ns8-docs/blob/main/docs/tutorial/disk_usage.md#redirect-podman-named-volume-mount-points-named-volume-disk) 
-[this](https://nethserver.github.io/ns8-core/modules/volumes/) in the dev manual
+and [this](https://nethserver.github.io/ns8-core/modules/volumes/) chapter in the dev manual
 
 The volume assignments on the local host the module expects are:
 - photoprism-storage        Sidecar files, config, album, user and cache (thumbs) location
@@ -106,6 +106,7 @@ Pay special attention to the import folder: photoprism cannot handle imports fro
 Photoprism import moves files around, and writes a lot of data (cache files, sidecar etc.):
 - import folder may be located on the same share as the originals folder for performance reasons when moving files.
 - storage may be located on fast storage (SSD/NVME).
+
 Example fstab mounts tested with Truenas SMB shares (file access via the local network of the originals folder):
 ```
 ToBeDone
