@@ -18,18 +18,29 @@ data = json.load(sys.stdin)
 env_file = os.path.join(os.getenv("AGENT_STATE_DIR"),"photoprism.env")
 try:
     app_config = agent.read_envfile(env_file)
-    #change corresponding values in the app_config and write to file if anything changed
-    #input is a lower key, output in env file is upper version
+    # Map configure-module input fields to their PhotoPrism environment variables.
+    input_to_env = {
+        "website_name": "PHOTOPRISM_SITE_NAME",
+        "website_title": "PHOTOPRISM_SITE_TITLE",
+        "website_caption": "PHOTOPRISM_SITE_CAPTION",
+        "website_description": "PHOTOPRISM_SITE_DESCRIPTION",
+        "website_author": "PHOTOPRISM_SITE_AUTHOR",
+        "admin_user": "PHOTOPRISM_ADMIN_USER",
+        "admin_password": "PHOTOPRISM_ADMIN_PASSWORD",
+    }
+
     changed = False
-    for key, value in app_config.items():
-        if key.lower() in data:
-            app_config[key] = data.get(key.lower())
+    for input_key, env_key in input_to_env.items():
+        if input_key in data:
+            app_config[env_key] = data[input_key]
             changed = True
-            sys.stdout.write("changed %s --> %s" %(key, app_config[key]))
-    #if the traefik url changes
-    if "host" in data: 
-        app_config["PHOTOPRISM_SITE_URL"]="https://" + data.get("host")
-        changed = True    
+            sys.stdout.write("Updated %s from input %s\n" % (env_key, input_key))
+
+    if "host" in data:
+        app_config["PHOTOPRISM_SITE_URL"] = "https://" + data["host"]
+        changed = True
+        sys.stdout.write("Updated PHOTOPRISM_SITE_URL from input host\n")
+
     if changed: agent.write_envfile(env_file, app_config)
     else: sys.stdout.write("No changes made to %s" %env_file)
 except FileNotFoundError:
